@@ -1,323 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSA Command Center</title>
-
-<style>
-:root{
-  --bg:#07070f;--s1:#0d0d1a;--s2:#111120;
-  --border:#1a1a2e;
-  --gold:#f0c040;--cyan:#00cfee;
-  --green:#00e676;--red:#ff4d6d;
-  --purple:#b06cff;
-  --text:#dde0f0;--muted:#8080a0;
-}
-
-*{margin:0;padding:0;box-sizing:border-box}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:"Times New Roman", serif;
-}
-
-/* HEADER */
-.header{
-  padding:16px 28px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-}
-.header span{color:var(--gold)}
-
-/* WRAP */
-.wrap{
-  max-width:1100px;
-  margin:auto;
-  padding:28px 20px;
-}
-@media(min-width:1400px){
-  .wrap{max-width:900px;}
-}
-
-/* HERO */
-.hero{
-  background:var(--s1);
-  border:1px solid var(--border);
-  padding:20px;
-}
-
-.hero-name{
-  font-size:22px;
-  font-weight:800;
-}
-.hero-name span{color:var(--gold)}
-
-.input-box{
-  margin-top:10px;
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-input{
-  padding:6px 10px;
-  background:#0d0d1a;
-  border:1px solid #252540;
-  color:#fff;
-  flex:1;
-  min-width:180px;
-}
-
-button{
-  padding:6px 12px;
-  background:var(--gold);
-  border:none;
-  cursor:pointer;
-}
-
-/* STATS */
-.hstats{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
-  flex-wrap:wrap;
-}
-.hst{
-  background:var(--s2);
-  border:1px solid var(--border);
-  padding:10px;
-  text-align:center;
-  flex:1;
-  min-width:100px;
-}
-.hst-v{
-  font-size:18px;
-  font-weight:800;
-  color:var(--gold);
-}
-.hst-l{
-  font-size:8px;
-  color:var(--muted);
-}
-
-/* DIFF */
-.g3{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:20px;
-}
-@media(max-width:600px){
-  .g3{grid-template-columns:1fr;}
-}
-
-.dc{
-  background:var(--s1);
-  border:1px solid var(--border);
-  padding:15px;
-}
-.dc.e{border-top:2px solid var(--green)}
-.dc.m{border-top:2px solid var(--gold)}
-.dc.h{border-top:2px solid var(--red)}
-
-.dn{
-  font-size:36px;
-  font-weight:800;
-}
-.e .dn{color:var(--green)}
-.m .dn{color:var(--gold)}
-.h .dn{color:var(--red)}
-
-/* HEATMAP */
-.hc{
-  background:var(--s1);
-  border:1px solid var(--border);
-  padding:20px;
-  margin-top:20px;
-}
-.hmap{
-  display:flex;
-  flex-wrap:wrap;
-  gap:4px;
-}
-.hcell{
-  width:14px;
-  height:14px;
-  background:#1a1a2e;
-}
-
-/* TOPIC */
-.topic{
-  margin-top:25px;
-  background:var(--s1);
-  border:1px solid var(--border);
-  padding:20px;
-}
-
-.trow{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:10px;
-  flex-wrap:wrap;
-}
-
-.tname{
-  flex:1;
-  min-width:120px;
-  word-break:break-word;
-}
-
-.tbar{
-  flex:3;
-  height:6px;
-  background:#22223a;
-  min-width:120px;
-}
-
-.tfill{
-  height:100%;
-  background:linear-gradient(90deg,#f0c040,#b06cff);
-}
-
-.tval{
-  width:40px;
-  text-align:right;
-  color:var(--gold);
-}
-
-/* FOOTER */
-.footer{
-  text-align:center;
-  margin-top:40px;
-  padding:15px;
-  border-top:1px solid var(--border);
-  color:var(--muted);
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeetCode Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06060e; --s1: #0c0c18; --s2: #10101e;
+      --border: #181828; --border2: #222238;
+      --gold: #f0c040; --gold2: #c8980c;
+      --cyan: #00d4f0; --green: #00e676; --red: #ff4060; --purple: #a855f7;
+      --text: #e0e0f0; --muted: #484860; --muted2: #7878a0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; min-height: 100vh; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(240,192,64,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(240,192,64,.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+    .orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
+    .oa { width: 600px; height: 600px; background: rgba(240,192,64,.05); top: -200px; left: -200px; }
+    .ob { width: 400px; height: 400px; background: rgba(0,212,240,.04); bottom: -100px; right: -100px; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 36px 16px 80px; position: relative; z-index: 1; }
+    /* HEADER */
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 34px; height: 34px; background: var(--gold); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; }
+    .logo-txt { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+    .logo-txt span { color: var(--gold); }
+    .hdr-tag { font-size: 9px; color: var(--muted); letter-spacing: 3px; border: 1px solid var(--border2); padding: 5px 11px; }
+    /* SEARCH */
+    .search-lbl { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; display: block; }
+    .search-row { display: flex; gap: 8px; margin-bottom: 32px; }
+    .search-input { flex: 1; background: var(--s1); border: 1px solid var(--border2); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 14px; padding: 14px 16px; outline: none; transition: border-color .2s; }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--gold); }
+    .search-btn { background: var(--gold); border: none; cursor: pointer; color: #000; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 14px 22px; transition: background .2s, transform .1s; white-space: nowrap; }
+    .search-btn:hover { background: var(--gold2); transform: translateY(-1px); }
+    .search-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    /* STATES */
+    #stateIdle, #stateLoading, #stateError, #stateResult { display: none; }
+    .show { display: block !important; }
+    .idle-box { background: var(--s1); border: 1px dashed var(--border2); padding: 48px; text-align: center; }
+    .idle-icon { font-size: 38px; margin-bottom: 14px; }
+    .idle-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: var(--muted2); margin-bottom: 8px; }
+    .idle-sub { font-size: 11px; color: var(--muted); line-height: 1.9; }
+    .idle-sub b { color: var(--gold); }
+    .loading-box { background: var(--s1); border: 1px solid var(--border); padding: 48px; text-align: center; }
+    .spinner { width: 46px; height: 46px; border: 3px solid var(--border2); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 18px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-user { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+    .loading-txt { font-size: 10px; color: var(--muted2); letter-spacing: 2px; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+    .err-box { background: rgba(255,64,96,.08); border: 1px solid rgba(255,64,96,.3); padding: 28px; text-align: center; }
+    .err-icon { font-size: 30px; margin-bottom: 10px; }
+    .err-title { font-size: 14px; font-weight: 600; color: var(--red); margin-bottom: 6px; }
+    .err-msg { font-size: 11px; color: var(--muted2); line-height: 1.8; }
+    .err-msg b { color: var(--gold); }
+    /* RESULT */
+    #stateResult { animation: fu .5s ease; }
+    @keyframes fu { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    /* Hero */
+    .hero { background: var(--s1); border: 1px solid var(--border); padding: 24px; margin-bottom: 18px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold), var(--cyan), var(--purple)); }
+    .hero-inner { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+    .av { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--cyan)); padding: 2px; flex-shrink: 0; }
+    .av-in { width: 100%; height: 100%; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--gold); }
+    .h-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+    .h-name span { color: var(--gold); }
+    .h-handle { font-size: 9px; color: var(--cyan); letter-spacing: 2px; margin-top: 3px; }
+    .h-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .htag { font-size: 8px; padding: 3px 9px; border-radius: 2px; letter-spacing: 1px; }
+    .htag-p { background: rgba(168,85,247,.12); color: var(--purple); border: 1px solid rgba(168,85,247,.25); }
+    .htag-g { background: rgba(0,230,118,.1); color: var(--green); border: 1px solid rgba(0,230,118,.2); }
+    .h-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+    .hst { background: var(--s2); border: 1px solid var(--border); padding: 10px 16px; text-align: center; }
+    .hst-v { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--gold); }
+    .hst-l { font-size: 7px; color: var(--muted); letter-spacing: 2px; margin-top: 2px; text-transform: uppercase; }
+    @media (max-width: 560px) { .h-stats { margin-left: 0; } }
+    /* Section heads */
+    .sh { display: flex; align-items: center; gap: 10px; margin: 22px 0 12px; }
+    .sh-t { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted2); white-space: nowrap; }
+    .sh::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    /* Overall bars */
+    .ocard { background: var(--s1); border: 1px solid var(--border); padding: 20px; margin-bottom: 12px; }
+    .orow { margin-bottom: 11px; }
+    .orow:last-child { margin-bottom: 0; }
+    .olbls { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; }
+    .olbls span:last-child { color: var(--gold); font-weight: 600; }
+    .otrack { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .ofill { height: 100%; border-radius: 3px; width: 0; transition: width 1.3s cubic-bezier(.4,0,.2,1); }
+    /* Diff cards */
+    .dg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 540px) { .dg { grid-template-columns: 1fr; } }
+    .dc { background: var(--s1); border: 1px solid var(--border); padding: 18px; transition: transform .2s; }
+    .dc:hover { transform: translateY(-2px); }
+    .dc.e { border-top: 2px solid var(--green); }
+    .dc.e:hover { border-color: var(--green); }
+    .dc.m { border-top: 2px solid var(--gold); }
+    .dc.m:hover { border-color: var(--gold); }
+    .dc.h { border-top: 2px solid var(--red); }
+    .dc.h:hover { border-color: var(--red); }
+    .dl { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+    .e .dl { color: var(--green); }
+    .m .dl { color: var(--gold); }
+    .h .dl { color: var(--red); }
+    .dn { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; line-height: 1; }
+    .e .dn { color: var(--green); }
+    .m .dn { color: var(--gold); }
+    .h .dn { color: var(--red); }
+    .ds { font-size: 9px; color: var(--muted); margin-top: 4px; }
+    .dp { font-size: 10px; font-weight: 600; margin-top: 2px; }
+    .e .dp { color: var(--green); }
+    .m .dp { color: var(--gold); }
+    .h .dp { color: var(--red); }
+    .db { height: 3px; background: var(--border); margin-top: 12px; border-radius: 2px; overflow: hidden; }
+    .df { height: 100%; border-radius: 2px; width: 0; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+    .e .df { background: var(--green); }
+    .m .df { background: var(--gold); }
+    .h .df { background: var(--red); }
+    /* Heatmap */
+    .hcard { background: var(--s1); border: 1px solid var(--border); padding: 20px; margin-bottom: 12px; }
+    .htop { display: flex; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+    .hbig { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; }
+    .hlbl { font-size: 8px; color: var(--muted); letter-spacing: 2px; margin-top: 2px; }
+    .hmap { display: flex; flex-wrap: wrap; gap: 4px; }
+    .hcell { width: 13px; height: 13px; border-radius: 2px; background: var(--border); cursor: default; transition: transform .1s; position: relative; }
+    .hcell:hover { transform: scale(1.7); z-index: 5; }
+    .hcell:hover::after { content: attr(data-t); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: var(--s2); border: 1px solid var(--border2); padding: 2px 7px; font-size: 9px; white-space: nowrap; pointer-events: none; z-index: 10; }
+    .hleg { display: flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 9px; color: var(--muted); }
+    .lc { width: 11px; height: 11px; border-radius: 2px; }
+    /* Insight cards */
+    .ig { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 540px) { .ig { grid-template-columns: 1fr; } }
+    .ic { background: var(--s1); border: 1px solid var(--border); padding: 16px; }
+    .ic-i { font-size: 20px; margin-bottom: 7px; }
+    .ic-l { font-size: 8px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+    .ic-b { font-size: 11px; line-height: 1.75; color: var(--muted2); }
+    .ic-b strong { color: var(--gold); }
+    .ic-b .gr { color: var(--green); font-weight: 600; }
+    .ic-b .rd { color: var(--red); font-weight: 600; }
+    .ic-b .cy { color: var(--cyan); font-weight: 600; }
+    .brow { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .bdg { font-size: 7px; padding: 2px 8px; border-radius: 2px; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
+    .bg { background: rgba(0,230,118,.1); color: var(--green); border: 1px solid rgba(0,230,118,.2); }
+    .by { background: rgba(240,192,64,.1); color: var(--gold); border: 1px solid rgba(240,192,64,.2); }
+    .br { background: rgba(255,64,96,.1); color: var(--red); border: 1px solid rgba(255,64,96,.2); }
+    .bc { background: rgba(0,212,240,.08); color: var(--cyan); border: 1px solid rgba(0,212,240,.2); }
+    .bp { background: rgba(168,85,247,.1); color: var(--purple); border: 1px solid rgba(168,85,247,.2); }
+    .api-note { background: rgba(0,212,240,.05); border: 1px solid rgba(0,212,240,.12); padding: 10px 14px; font-size: 10px; color: var(--muted2); margin-top: 18px; display: flex; align-items: center; gap: 8px; }
+    .api-note b { color: var(--cyan); }
+    /* footer */
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); flex-wrap: wrap; gap: 6px; }
+    footer span { color: var(--gold); }
+  </style>
 </head>
-
 <body>
-
-<div class="header">
-  <div><span>Animesh</span>045</div>
-  <div>DSA Command Center</div>
-</div>
-
-<div class="wrap">
-
-<div class="hero">
-  <div class="hero-name"><span>Enter</span> Username</div>
-
-  <div class="input-box">
-    <input id="usernameInput" placeholder="LeetCode username">
-    <button onclick="fetchData()">Fetch</button>
-  </div>
-
-  <div class="hstats">
-    <div class="hst"><div class="hst-v" id="solved">--</div><div class="hst-l">Solved</div></div>
-    <div class="hst"><div class="hst-v" id="rank">--</div><div class="hst-l">Rank</div></div>
-    <div class="hst"><div class="hst-v" id="acc">--</div><div class="hst-l">Acceptance</div></div>
-    <div class="hst"><div class="hst-v" id="peak">--</div><div class="hst-l">Peak</div></div>
-  </div>
-</div>
-
-<div class="g3">
-  <div class="dc e"><div class="dn" id="easy">--</div>Easy</div>
-  <div class="dc m"><div class="dn" id="medium">--</div>Medium</div>
-  <div class="dc h"><div class="dn" id="hard">--</div>Hard</div>
-</div>
-
-<div class="hc">
-  <div><strong id="tsubs">0</strong> submissions</div>
-  <div class="hmap" id="hmap"></div>
-</div>
-
-<div class="topic" id="topics"></div>
-
-</div>
-
-<div class="footer">
-  © 2026 Animesh • DSA Dashboard
-</div>
-
-<script>
-async function fetchData(){
-  const user=document.getElementById("usernameInput").value.trim();
-  if(!user) return alert("Enter username");
-
-  const res=await fetch(`https://leetcode-api-faisalshohag.vercel.app/${user}`);
-  const data=await res.json();
-
-  if(!data || !data.totalSolved) return alert("User not found");
-
-  document.querySelector(".hero-name").innerHTML=`<span>${user}</span> Dashboard`;
-
-  document.getElementById("solved").innerText=data.totalSolved;
-  document.getElementById("rank").innerText="#" + (data.ranking||"N/A");
-
-  let acc=data.acceptanceRate;
-  if(!acc) acc=(data.totalSolved/(data.totalSolved+200))*100;
-  document.getElementById("acc").innerText=acc.toFixed(1)+"%";
-
-  document.getElementById("easy").innerText=data.easySolved;
-  document.getElementById("medium").innerText=data.mediumSolved;
-  document.getElementById("hard").innerText=data.hardSolved;
-
-  buildHeatmap(data.totalSolved);
-  buildTopics(data.totalSolved);
-}
-
-function buildHeatmap(total){
-  const el=document.getElementById("hmap");
-  el.innerHTML="";
-  let peak=0,totalSubs=0;
-
-  for(let i=0;i<70;i++){
-    let val=Math.floor(Math.random()*total/10);
-    peak=Math.max(peak,val);
-    totalSubs+=val;
-
-    const d=document.createElement("div");
-    d.className="hcell";
-
-    if(val>peak*0.8)d.style.background="#f0c040";
-    else if(val>peak*0.5)d.style.background="#b06cff";
-    else if(val>peak*0.2)d.style.background="#00cfee";
-
-    el.appendChild(d);
-  }
-
-  document.getElementById("tsubs").innerText=totalSubs;
-  document.getElementById("peak").innerText=peak;
-}
-
-function buildTopics(total){
-  const topics=[
-    "Array","String","Hash Table","Dynamic Programming","Math",
-    "Sorting","Greedy","Tree","Binary Search",
-    "Two Pointer","Sliding Window","Graph"
-  ];
-
-  const box=document.getElementById("topics");
-  box.innerHTML="<h3 style='margin-bottom:10px'>Topic Mastery</h3>";
-
-  topics.forEach((t,i)=>{
-    let val=Math.floor(total/(i+3));
-
-    box.innerHTML+=`
-      <div class="trow">
-        <div class="tname">${t}</div>
-        <div class="tbar"><div class="tfill" style="width:${Math.min(val*2,100)}%"></div></div>
-        <div class="tval">${val}</div>
+  <div class="orb oa"></div>
+  <div class="orb ob"></div>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="logo-mark">LC</div>
+        <div class="logo-txt"><span>LeetCode</span> Analyzer</div>
       </div>
-    `;
-  });
-}
-</script>
+      <div class="hdr-tag">REAL-TIME STATS</div>
+    </header>
+    <span class="search-lbl">Enter any LeetCode username</span>
+    <div class="search-row">
+      <input class="search-input" id="uInput" type="text" placeholder="e.g. animesh045" autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="search-btn" id="sBtn">ANALYZE</button>
+    </div>
+    <div id="stateIdle" class="show">
+      <div class="idle-box">
+        <div class="idle-icon">👨‍💻</div>
+        <div class="idle-title">Enter a username above</div>
+        <div class="idle-sub">Type any LeetCode username and hit <b>ANALYZE</b><br>to see their live stats, difficulty breakdown &amp; insights.</div>
+      </div>
+    </div>
+    <div id="stateLoading">
+      <div class="loading-box">
+        <div class="loading-user" id="ldUser"></div>
+        <div class="spinner"></div>
+        <div class="loading-txt">Fetching live data...</div>
+      </div>
+    </div>
+    <div id="stateError">
+      <div class="err-box">
+        <div class="err-icon">⚠️</div>
+        <div class="err-title">Could not load profile</div>
+        <div class="err-msg" id="errMsg"></div>
+      </div>
+    </div>
+    <div id="stateResult"></div>
+    <footer>
+      <span>LeetCode Analyzer</span>
+      Real-time data | Works for any username | <span>Deploy free on GitHub Pages</span>
+    </footer>
+  </div>
+  <script>
+    // Helpers
+    function show(id) {
+      ['stateIdle', 'stateLoading', 'stateError', 'stateResult'].forEach(s => document.getElementById(s).style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+    function animateBars() {
+      setTimeout(() => document.querySelectorAll('[data-pct]').forEach(el => {
+        el.style.width = Math.min(parseFloat(el.dataset.pct), 100) + '%';
+      }), 120);
+    }
 
+    // Fetch with multiple CORS-safe endpoints (CORRECTED)
+    async function fetchStats(user) {
+      const endpoints = [
+        `https://alfa-leetcode-api.onrender.com/${user}`,
+        `https://leetcode-stats-api.herokuapp.com/${user}`,
+        `https://api.lcc.lanproxy.top/${user}`,
+        `https://sad-alfred-6.leetcodestats-9bcef1de.koyeb.app/${user}`
+      ];
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            signal: AbortSignal.timeout(10000)
+          });
+          if (!res.ok) continue;
+          const json = await res.json();
+          // alfa-leetcode-api returns nested structure
+          if (json.totalSolved !== undefined) return { source: 'basic', data: json };
+          // alfa returns different shape
+          if (json.solvedProblem !== undefined && json.easySolved !== undefined) return { source: 'alfa', data: json };
+        } catch { /* next */ }
+      }
+      return null;
+    }
+
+    // Calendar fetch (with fallback)
+    async function fetchCalendar(user) {
+      const calEndpoints = [
+        `https://alfa-leetcode-api.onrender.com/${user}/calendar`,
+        `https://api.lcc.lanproxy.top/${user}/calendar`
+      ];
+      for (const url of calEndpoints) {
+        try {
+          const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+          if (!res.ok) continue;
+          const json = await res.json();
+          let cal = json.submissionCalendar || json.calendar;
+          if (typeof cal === 'string') try { cal = JSON.parse(cal); } catch { }
+          return cal;
+        } catch { /* next */ }
+      }
+      return {};
+    }
+
+    // Normalize data from either API shape
+    function normalize(raw) {  // alfa-leetcode-api username endpoint
+      if (raw.totalSolved !== undefined) {
+        return {
+          totalSolved: raw.totalSolved || 0,
+          totalQuestions: raw.totalQuestions || 3800,
+          easySolved: raw.easySolved || 0,
+          totalEasy: raw.totalEasy || 850,
+          mediumSolved: raw.mediumSolved || 0,
+          totalMedium: raw.totalMedium || 1800,
+          hardSolved: raw.hardSolved || 0,
+          totalHard: raw.totalHard || 700,
+          acceptanceRate: raw.acceptanceRate || 0,
+          ranking: raw.ranking || 0
+        };
+      }
+      // alternative shape
+      return {
+        totalSolved: raw.solvedProblem || raw.solved || 0,
+        totalQuestions: raw.totalProblems || 3800,
+        easySolved: raw.easySolved || raw.easy || 0,
+        totalEasy: raw.totalEasy || 850,
+        mediumSolved: raw.mediumSolved || raw.medium || 0,
+        totalMedium: raw.totalMedium || 1800,
+        hardSolved: raw.hardSolved || raw.hard || 0,
+        totalHard: raw.totalHard || 700,
+        acceptanceRate: raw.acceptanceRate || 0,
+        ranking: raw.ranking || 0
+      };
+    }
+
+    // Main analyze
+    async function analyze() {
+      const raw = document.getElementById('uInput').value.trim().replace(/ /g, '');
+      if (!raw) {
+        const inp = document.getElementById('uInput');
+        inp.style.borderColor = 'var(--red)';
+        setTimeout(() => inp.style.borderColor = '', 1200);
+        return;
+      }
+      const btn = document.getElementById('sBtn');
+      btn.disabled = true;
+      document.getElementById('ldUser').textContent = raw;
+      show('stateLoading');
+      // fetch stats + calendar in parallel
+      const [result, calendar] = await Promise.all([fetchStats(raw), fetchCalendar(raw)]);
+      btn.disabled = false;
+      if (!result) {
+        document.getElementById('errMsg').innerHTML = `User <b>${raw}</b> not found or API is temporarily unavailable.<br>Double-check the username spelling. LeetCode usernames are case-sensitive.<br><br><span style="color:var(--muted);font-size:10px">If this keeps happening, the public API may be rate-limited. Try again in a few seconds.</span>`;
+        show('stateError');
+        return;
+      }
+      const d = normalize(result.data);
+      localStorage.setItem('lclastuser', raw);
+      render(raw, d, calendar);
+      show('stateResult');
+      animateBars();
+    }
+
+    // Render
+    function render(username, d, cal) {
+      const pct = (n, t) => t ? (n/t*100).toFixed(1) : '0.0';
+      const ep = pct(d.easySolved, d.totalEasy);
+      const mp = pct(d.mediumSolved, d.totalMedium);
+      const hp = pct(d.hardSolved, d.totalHard);
+      const tp = pct(d.totalSolved, d.totalQuestions);
+      // Calendar analysis
+      const calArr = Object.entries(cal).sort((a,b) => a[0]-b[0]);
+      const totalSubs = calArr.reduce((s,v) => s + v[1], 0);
+      const peakDay = calArr.length ? Math.max(...calArr.map(e => e[1])) : 0;
+      const activeDays = calArr.filter(v => v[1] > 0).length;
+      // Heatmap cells
+      const maxVal = peakDay || 1;
+      const hmapHTML = calArr.map(([c]) => {
+        const r = c / maxVal;
+        const bg = r > .8 ? 'rgba(240,192,64,.95)' : r > .5 ? 'rgba(240,192,64,.55)' : r > .25 ? 'rgba(168,85,247,.55)' : r > .05 ? 'rgba(0,212,240,.4)' : 'rgba(0,212,240,.18)';
+        return `<div class="hcell" data-t="${c} subs" style="background:${bg}"></div>`;
+      }).join('');
+      // Skill label
+      const skill = d.totalSolved < 50 ? 'Beginner' : d.totalSolved < 150 ? 'Novice' : d.totalSolved < 300 ? 'Intermediate' : d.totalSolved < 500 ? 'Advanced' : 'Expert';
+      const init = username.charAt(0).toUpperCase();
+      const rankStr = d.ranking ? d.ranking.toLocaleString() : '';
+      const accNum = parseFloat(d.acceptanceRate) || 0;
+      const accBdg = accNum >= 60 ? 'bg' : accNum >= 45 ? 'by' : 'br';
+      const accLbl = accNum >= 60 ? 'Excellent' : accNum >= 45 ? 'Good' : 'Needs Work';
+      document.getElementById('stateResult').innerHTML = `
+        <div class="hero">
+          <div class="hero-inner">
+            <div class="av"><div class="av-in">${init}</div></div>
+            <div>
+              <div class="h-name"><span>${username}</span></div>
+              <div class="h-handle">@${username} LEETCODE</div>
+              <div class="h-tags">
+                <span class="htag htag-p">${skill}</span>
+                <span class="htag htag-g">${d.totalSolved} Solved</span>
+                ${d.ranking ? `<span class="htag htag-p">${rankStr}</span>` : ''}
+              </div>
+            </div>
+            <div class="h-stats">
+              <div class="hst"><div class="hst-v">${d.totalSolved}</div><div class="hst-l">Solved</div></div>
+              <div class="hst"><div class="hst-v">${accNum ? accNum.toFixed(1) : 'N/A'}</div><div class="hst-l">Acceptance</div></div>
+              <div class="hst">${d.ranking ? `<div class="hst-v">${Math.round(d.ranking/1000)}K</div>` : ''}<div class="hst-l">Rank</div></div>
+              ${peakDay ? `<div class="hst"><div class="hst-v">${peakDay}</div><div class="hst-l">Peak Day</div></div>` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="sh"><div class="sh-t">Overall Progress</div></div>
+        <div class="ocard">
+          <div class="orow">
+            <div class="olbls"><span>Total Solved ${d.totalSolved}/${d.totalQuestions}</span><span>${tp}%</span></div>
+            <div class="otrack"><div class="ofill" data-pct="${tp}" style="background:linear-gradient(90deg,var(--gold),var(--cyan))"></div></div>
+          </div>
+          <div class="orow">
+            <div class="olbls"><span>Easy ${d.easySolved}/${d.totalEasy}</span><span>${ep}%</span></div>
+            <div class="otrack"><div class="ofill" data-pct="${ep}" style="background:var(--green)"></div></div>
+          </div>
+          <div class="orow">
+            <div class="olbls"><span>Medium ${d.mediumSolved}/${d.totalMedium}</span><span>${mp}%</span></div>
+            <div class="otrack"><div class="ofill" data-pct="${mp}" style="background:var(--gold)"></div></div>
+          </div>
+          <div class="orow" style="margin-bottom:0">
+            <div class="olbls"><span>Hard ${d.hardSolved}/${d.totalHard}</span><span>${hp}%</span></div>
+            <div class="otrack"><div class="ofill" data-pct="${hp}" style="background:var(--red)"></div></div>
+          </div>
+        </div>
+        <div class="sh"><div class="sh-t">Difficulty Breakdown</div></div>
+        <div class="dg">
+          <div class="dc e">
+            <div class="dl">Easy</div>
+            <div class="dn">${d.easySolved}</div>
+            <div class="ds">${d.totalEasy} total</div>
+            <div class="dp">${ep} done</div>
+            <div class="db"><div class="df" data-pct="${ep}"></div></div>
+          </div>
+          <div class="dc m">
+            <div class="dl">Medium</div>
+            <div class="dn">${d.mediumSolved}</div>
+            <div class="ds">${d.totalMedium} total</div>
+            <div class="dp">${mp} done</div>
+            <div class="db"><div class="df" data-pct="${mp}"></div></div>
+          </div>
+          <div class="dc h">
+            <div class="dl">Hard</div>
+            <div class="dn">${d.hardSolved}</div>
+            <div class="ds">${d.totalHard} total</div>
+            <div class="dp">${hp} done</div>
+            <div class="db"><div class="df" data-pct="${hp}"></div></div>
+          </div>
+        </div>
+        ${calArr.length > 0 ? `
+        <div class="sh"><div class="sh-t">Submission Activity</div></div>
+        <div class="hcard">
+          <div class="htop">
+            <div><div class="hbig">${totalSubs.toLocaleString()}</div><div class="hlbl">TOTAL SUBMISSIONS</div></div>
+            <div style="text-align:right"><div class="hbig" style="color:var(--gold)">${peakDay}</div><div class="hlbl">PEAK DAY</div></div>
+            <div style="text-align:right"><div class="hbig" style="color:var(--cyan)">${activeDays}</div><div class="hlbl">ACTIVE DAYS</div></div>
+          </div>
+          <div class="hmap">${hmapHTML}</div>
+          <div class="hleg">
+            Less&nbsp;
+            <div class="lc" style="background:var(--border)"></div>
+            <div class="lc" style="background:rgba(0,212,240,.25)"></div>
+            <div class="lc" style="background:rgba(168,85,247,.5)"></div>
+            <div class="lc" style="background:rgba(240,192,64,.6)"></div>
+            <div class="lc" style="background:rgba(240,192,64,.95)"></div>
+            &nbsp;More
+          </div>
+        </div>
+        ` : ''}
+        <div class="sh"><div class="sh-t">Profile Insights</div></div>
+        <div class="ig">
+          <div class="ic">
+            <div class="ic-i">🎯</div>
+            <div class="ic-l">Skill Assessment</div>
+            <div class="ic-b"><strong>${skill}</strong> level with <strong>${d.totalSolved}</strong> problems solved. ${d.hardSolved > 0 ? `Attempting <strong>${d.hardSolved}</strong> hard problems</strong> shows real depth. Start tackling hard problems to level up faster.` : ''} ${d.mediumSolved > d.easySolved ? `Strong medium focus – great for interviews. Push more mediums, that's the interview sweet spot.` : ''}</div>
+            <div class="brow">
+              <span class="bdg ${d.totalSolved >= 300 ? 'bg' : d.totalSolved >= 100 ? 'by' : 'br'}">${skill}</span>
+              ${d.hardSolved >= 10 ? '<span class="bdg bp">HARD SOLVER</span>' : ''}
+              ${d.totalSolved >= 100 ? '<span class="bdg bc">100 CLUB</span>' : ''}
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-i">📊</div>
+            <div class="ic-l">Accuracy</div>
+            <div class="ic-b"><strong>${accNum ? accNum.toFixed(2) : 'N/A'}</strong> acceptance rate. ${accNum >= 60 ? `<span class="gr">Excellent!</span> Well above the ~45% platform average.` : accNum >= 45 ? `<span class="gr">Good.</span> Above platform average. Keep refining before submitting.` : accNum > 0 ? `<span class="rd">Below average.</span> Think through edge cases before submitting.` : 'No data available.'}</div>
+            <div class="brow">
+              <span class="bdg ${accBdg}">${accLbl}</span>
+              ${accNum >= 55 ? '<span class="bdg bc">CLEAN CODER</span>' : ''}
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-i">⚡</div>
+            <div class="ic-l">Grind Stats</div>
+            <div class="ic-b">${activeDays > 0 ? `Active on <strong>${activeDays}</strong> days</strong> with <strong>${totalSubs.toLocaleString()}</strong> submissions</strong> tracked.` : 'No recent activity data found.'} ${peakDay >= 50 ? `<span class="gr">${peakDay} subs/day</span> – peak beast mode!` : peakDay >= 20 ? `<span class="gr">${peakDay} subs/day</span> – peak serious grind.` : `Peak <span class="cy">${peakDay} subs/day</span>.`}</div>
+            <div class="brow">
+              ${peakDay >= 50 ? '<span class="bdg br">BEAST MODE</span>' : ''}
+              ${peakDay >= 20 ? '<span class="bdg by">DEDICATED</span>' : ''}
+              ${activeDays >= 20 ? '<span class="bdg bg">CONSISTENT</span>' : ''}
+            </div>
+          </div>
+          <div class="ic">
+            <div class="ic-i">🚀</div>
+            <div class="ic-l">Next Milestone</div>
+            <div class="ic-b">${d.totalSolved >= 100 ? `Reach <strong>100 problems</strong> – only <strong>${100 - d.totalSolved}</strong> more to go. Focus on Easy + Medium.` : ''} ${d.totalSolved >= 300 ? `Push to <strong>300 problems</strong> – <strong>${300 - d.totalSolved}</strong> more needed. Enter weekly contests!` : ''} ${d.totalSolved >= 500 ? `Target <strong>500 problems</strong> – <strong>${500 - d.totalSolved}</strong> to go</strong>. Focus on Hards now.` : ''} <strong>${d.totalSolved}</strong> solved! Now focus on contest rating and Hard-only grind.</div>
+            <div class="brow">
+              <span class="bdg bc">${d.totalSolved >= 100 ? '100 CLUB' : d.totalSolved >= 300 ? '300 CLUB' : d.totalSolved >= 500 ? '500 CLUB ELITE' : ''}</span>
+            </div>
+          </div>
+        </div>
+        <div class="api-note">
+          <b>🔄</b> Live data from public LeetCode API – refresh anytime for latest stats.
+        </div>
+      `;
+    }
+
+    // Event listeners
+    document.getElementById('sBtn').addEventListener('click', analyze);
+    document.getElementById('uInput').addEventListener('keydown', e => { if (e.key === 'Enter') analyze(); });
+    // Restore last searched user
+    window.addEventListener('load', () => {
+      const saved = localStorage.getItem('lclastuser');
+      if (saved) document.getElementById('uInput').value = saved;
+    });
+  </script>
 </body>
 </html>
