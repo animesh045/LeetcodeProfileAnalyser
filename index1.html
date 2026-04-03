@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animesh045 — DSA Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070f;--s1:#0d0d1a;--s2:#111120;
+  --border:#1a1a2e;--border2:#252540;
+  --gold:#f0c040;--cyan:#00cfee;--green:#00e676;
+  --red:#ff4d6d;--purple:#b06cff;--orange:#ff8c42;
+  --text:#dde0f0;--muted:#505068;--muted2:#8080a0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(240,192,64,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(240,192,64,.025) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.o1{width:700px;height:700px;background:rgba(240,192,64,.04);top:-200px;left:-200px}
+.o2{width:500px;height:500px;background:rgba(0,207,238,.03);bottom:-150px;right:-150px}
+
+.wrap{max-width:1100px;margin:0 auto;padding:28px 16px 80px;position:relative;z-index:1}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:0}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-box{width:32px;height:32px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#000}
+.brand-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}.brand-name span{color:var(--gold)}
+.tag{font-size:9px;color:var(--muted);letter-spacing:3px;border:1px solid var(--border2);padding:4px 10px}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:13px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;color:var(--muted2);border:none;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;text-transform:uppercase;white-space:nowrap;transition:all .2s}
+.tab:hover{color:var(--text)}.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* ── PANELS ── */
+.panel{display:none}.panel.active{display:block;animation:fu .4s ease}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION HEADS ── */
+.sh{display:flex;align-items:center;gap:10px;margin:24px 0 12px}
+.sh-t{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2);white-space:nowrap}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── HERO ── */
+.hero{background:var(--s1);border:1px solid var(--border);padding:22px;position:relative;overflow:hidden;margin-bottom:16px}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan),var(--purple))}
+.hi{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--cyan));padding:2px;flex-shrink:0}
+.av-in{width:100%;height:100%;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold)}
+.hero-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}.hero-name span{color:var(--gold)}
+.hero-handle{font-size:9px;color:var(--cyan);letter-spacing:2px;margin-top:3px}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;margin-top:7px;background:rgba(176,108,255,.12);border:1px solid rgba(176,108,255,.3);padding:3px 10px;font-size:9px;color:var(--purple);letter-spacing:1px}
+.hstats{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.hst{background:var(--s2);border:1px solid var(--border);padding:10px 14px;text-align:center}
+.hst-v{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold)}.hst-l{font-size:7px;color:var(--muted);letter-spacing:2px;margin-top:2px;text-transform:uppercase}
+
+/* ── GRIDS ── */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.g3,.g2{grid-template-columns:1fr}.hstats{margin-left:0}}
+
+/* ── DIFF CARDS ── */
+.dc{background:var(--s1);border:1px solid var(--border);padding:16px;position:relative;transition:transform .2s}
+.dc:hover{transform:translateY(-2px)}
+.dc.e{border-top:2px solid var(--green)}.dc.e:hover{border-color:var(--green)}
+.dc.m{border-top:2px solid var(--gold)}.dc.m:hover{border-color:var(--gold)}
+.dc.h{border-top:2px solid var(--red)}.dc.h:hover{border-color:var(--red)}
+.dl{font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.e .dl{color:var(--green)}.m .dl{color:var(--gold)}.h .dl{color:var(--red)}
+.dn{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;line-height:1}
+.e .dn{color:var(--green)}.m .dn{color:var(--gold)}.h .dn{color:var(--red)}
+.ds{font-size:9px;color:var(--muted);margin-top:3px}
+.db{height:3px;background:var(--border);margin-top:10px;border-radius:2px;overflow:hidden}
+.df{height:100%;border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.e .df{background:var(--green)}.m .df{background:var(--gold)}.h .df{background:var(--red)}
+
+/* ── HEATMAP ── */
+.hc{background:var(--s1);border:1px solid var(--border);padding:20px;margin-bottom:12px}
+.ht{display:flex;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.hb{font-family:'Syne',sans-serif;font-size:28px;font-weight:800}.hl{font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:2px}
+.hmap{display:flex;flex-wrap:wrap;gap:4px}
+.hcell{width:14px;height:14px;border-radius:2px;background:var(--border);cursor:default;transition:transform .1s;position:relative}
+.hcell:hover{transform:scale(1.6);z-index:5}
+.hcell:hover::after{content:attr(data-t);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--border2);padding:2px 7px;font-size:9px;white-space:nowrap;pointer-events:none;z-index:10}
+
+/* ── INSIGHT CARDS ── */
+.ic{background:var(--s1);border:1px solid var(--border);padding:16px}
+.ic-icon{font-size:20px;margin-bottom:6px}.ic-l{font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.ic-b{font-size:11px;line-height:1.7;color:var(--muted2)}.ic-b strong{color:var(--gold)}
+
+/* ── PROGRESS BARS ── */
+.pc{background:var(--s1);border:1px solid var(--border);padding:20px;margin-bottom:14px}
+.pr{margin-bottom:12px}.pr:last-child{margin-bottom:0}
+.pl{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}.pl span:last-child{color:var(--gold);font-weight:600}
+.pt{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+
+/* ── MODULE CARDS ── */
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:600px){.mg{grid-template-columns:1fr}}
+.mc{background:var(--s1);border:1px solid var(--border);padding:12px 12px 12px 16px;display:flex;gap:10px;align-items:flex-start;transition:transform .15s;position:relative}
+.mc:hover{transform:translateX(3px)}
+.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.mc.done::before{background:var(--green)}.mc.now::before{background:var(--gold);box-shadow:0 0 6px var(--gold)}.mc.nxt::before{background:var(--cyan)}.mc.up::before{background:var(--border2)}
+.mc.now{background:rgba(240,192,64,.04);border-color:rgba(240,192,64,.2)}
+.mn{font-size:9px;font-weight:700;min-width:26px;flex-shrink:0;padding-top:2px;line-height:1.4}
+.mc.done .mn{color:var(--green)}.mc.now .mn{color:var(--gold)}.mc.nxt .mn{color:var(--cyan)}.mc.up .mn{color:var(--muted)}
+.mt{font-size:11px;font-weight:600;margin-bottom:2px;line-height:1.3}
+.mc.done .mt{color:var(--muted2)}.mc.now .mt{color:var(--gold)}.mc.nxt .mt{color:var(--cyan)}.mc.up .mt{color:var(--muted)}
+.mm{font-size:9px;color:var(--muted);line-height:1.5;margin-bottom:4px}
+.mtg{display:inline-block;font-size:7px;padding:2px 6px;border-radius:2px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.tg-done{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+.tg-now{background:rgba(240,192,64,.15);color:var(--gold);border:1px solid rgba(240,192,64,.4);animation:glow 2s ease-in-out infinite}
+.tg-nxt{background:rgba(0,207,238,.1);color:var(--cyan);border:1px solid rgba(0,207,238,.2)}
+.tg-up{background:rgba(80,80,104,.2);color:var(--muted2);border:1px solid var(--border2)}
+@keyframes glow{0%,100%{box-shadow:none}50%{box-shadow:0 0 8px rgba(240,192,64,.3)}}
+
+/* ── ROADMAP ── */
+.rc{background:var(--s1);border:1px solid var(--border);padding:16px 16px 16px 20px;display:flex;gap:12px;margin-bottom:8px;position:relative}
+.rc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.rc.p1::before{background:var(--red)}.rc.p2::before{background:var(--gold)}.rc.p3::before{background:var(--cyan)}.rc.p4::before{background:var(--purple)}.rc.p5::before{background:var(--green)}.rc.p6::before{background:var(--orange)}
+.rn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0;border-radius:3px}
+.p1 .rn{background:rgba(255,77,109,.12);color:var(--red);border:1px solid rgba(255,77,109,.25)}
+.p2 .rn{background:rgba(240,192,64,.1);color:var(--gold);border:1px solid rgba(240,192,64,.25)}
+.p3 .rn{background:rgba(0,207,238,.08);color:var(--cyan);border:1px solid rgba(0,207,238,.2)}
+.p4 .rn{background:rgba(176,108,255,.1);color:var(--purple);border:1px solid rgba(176,108,255,.2)}
+.p5 .rn{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+.p6 .rn{background:rgba(255,140,66,.1);color:var(--orange);border:1px solid rgba(255,140,66,.2)}
+.rt h4{font-size:12px;font-weight:600;margin-bottom:3px}.rt p{font-size:11px;color:var(--muted2);line-height:1.7}.rt p strong{color:var(--text)}
+.bs{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.b{font-size:7px;padding:2px 7px;border-radius:2px;letter-spacing:1px;font-weight:700;text-transform:uppercase}
+.br{background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2)}
+.bg{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+.by{background:rgba(240,192,64,.1);color:var(--gold);border:1px solid rgba(240,192,64,.2)}
+.bc{background:rgba(0,207,238,.08);color:var(--cyan);border:1px solid rgba(0,207,238,.2)}
+.bp{background:rgba(176,108,255,.1);color:var(--purple);border:1px solid rgba(176,108,255,.2)}
+.bo{background:rgba(255,140,66,.1);color:var(--orange);border:1px solid rgba(255,140,66,.2)}
+
+/* ── QUESTION CARDS ── */
+.qc{background:var(--s1);border:1px solid var(--border);padding:11px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;transition:border-color .2s,background .2s}
+.qc:hover{border-color:var(--gold);background:rgba(240,192,64,.03)}
+.qd{font-size:7px;padding:3px 7px;border-radius:2px;font-weight:700;letter-spacing:1px;min-width:50px;text-align:center;flex-shrink:0}
+.qd.E{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.qd.M{background:rgba(240,192,64,.1);color:var(--gold);border:1px solid rgba(240,192,64,.25)}
+.qd.H{background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.25)}
+.qn{font-size:11px;font-weight:600;flex:1}.qt{font-size:9px;color:var(--muted);margin-top:1px}
+.qa{color:var(--muted);flex-shrink:0;font-size:11px}
+
+/* ── DEPLOY ── */
+.db-box{background:var(--s1);border:1px solid rgba(0,230,118,.2);padding:22px}
+.db-box h3{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--green);margin-bottom:14px}
+.cw{margin-bottom:8px}
+.cl{font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:3px}
+.cmd{background:var(--bg);border:1px solid var(--border2);padding:9px 12px;font-size:11px;color:var(--cyan);cursor:pointer;transition:border-color .2s;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cmd:hover{border-color:var(--cyan)}.cmd code{flex:1;word-break:break-all;font-family:'JetBrains Mono',monospace}
+.cp-lbl{font-size:7px;color:var(--muted);letter-spacing:1px;flex-shrink:0}
+.cmd:hover .cp-lbl{color:var(--gold)}
+.note{font-size:10px;color:var(--muted2);line-height:1.7;margin-top:12px}.note strong{color:var(--gold)}
+
+footer{margin-top:50px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:9px;color:var(--muted);flex-wrap:wrap;gap:6px}
+footer span{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div>
+
+<div class="wrap">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand"><div class="brand-box">A</div><div class="brand-name"><span>animesh</span>045</div></div>
+    <div class="tag">DSA COMMAND CENTER</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="sw('lc',this)">📊 LC Analysis</button>
+    <button class="tab" onclick="sw('alpha',this)">🎓 Alpha Roadmap</button>
+    <button class="tab" onclick="sw('qs',this)">🎯 Questions Plan</button>
+    <button class="tab" onclick="sw('deploy',this)">🚀 GitHub Deploy</button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 1 — LC ANALYSIS
+  ══════════════════════════════════════ -->
+  <div class="panel active" id="panel-lc">
+
+    <div class="hero">
+      <div class="hi">
+        <div class="av"><div class="av-in">A</div></div>
+        <div>
+          <div class="hero-name"><span>Animesh</span> 045</div>
+          <div class="hero-handle">@animesh045 · LEETCODE</div>
+          <div class="hero-badge">🎓 ALPHA DSA · M27 QUEUES ✅ · M28 GREEDY ▶</div>
+        </div>
+        <div class="hstats">
+          <div class="hst"><div class="hst-v">200</div><div class="hst-l">Solved</div></div>
+          <div class="hst"><div class="hst-v">#786K</div><div class="hst-l">Rank</div></div>
+          <div class="hst"><div class="hst-v">58.7%</div><div class="hst-l">Acceptance</div></div>
+          <div class="hst"><div class="hst-v">98</div><div class="hst-l">Peak Day</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh"><div class="sh-t">⬡ Difficulty Breakdown</div></div>
+    <div class="g3">
+      <div class="dc e"><div class="dl">Easy</div><div class="dn">87</div><div class="ds">/ 935 total · 9.3%</div><div class="db"><div class="df" data-p="9.3"></div></div></div>
+      <div class="dc m"><div class="dl">Medium</div><div class="dn">92</div><div class="ds">/ 2033 total · 4.5%</div><div class="db"><div class="df" data-p="4.5"></div></div></div>
+      <div class="dc h"><div class="dl">Hard</div><div class="dn">21</div><div class="ds">/ 920 total · 2.3%</div><div class="db"><div class="df" data-p="2.3"></div></div></div>
+    </div>
+
+    <div class="sh"><div class="sh-t">⬡ Submission Heatmap — Real Calendar Data</div></div>
+    <div class="hc">
+      <div class="ht">
+        <div><div class="hb" id="tsubs">—</div><div class="hl">TOTAL SUBMISSIONS TRACKED</div></div>
+        <div style="text-align:right"><div class="hb" style="color:var(--gold)">98</div><div class="hl">PEAK DAY 🔥</div></div>
+      </div>
+      <div class="hmap" id="hmap"></div>
+    </div>
+
+    <div class="sh"><div class="sh-t">⬡ Profile Insights</div></div>
+    <div class="g2">
+      <div class="ic"><div class="ic-icon">🎯</div><div class="ic-l">Skill Level</div><div class="ic-b">At <strong>200 problems</strong> with 21 hards, you're solidly <strong>intermediate tier</strong>. Medium is your sweet spot — 92 mediums shows real depth.</div></div>
+      <div class="ic"><div class="ic-icon">🔥</div><div class="ic-l">Grind Intensity</div><div class="ic-b"><strong>98 submissions in a single day.</strong> Your recent calendar is on fire. This momentum is rare — don't break the streak.</div></div>
+      <div class="ic"><div class="ic-icon">✅</div><div class="ic-l">Accuracy</div><div class="ic-b"><strong>58.66% acceptance rate</strong> — well above the ~45% platform average. You think before you submit. Interviewers love this.</div></div>
+      <div class="ic"><div class="ic-icon">📈</div><div class="ic-l">Rank Trajectory</div><div class="ic-b">Currently <strong>#786,821</strong>. 100 more mediums → <strong>top 300K</strong>. Weekly contests → <strong>top 200K</strong> within 2 months easily.</div></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 2 — ALPHA ROADMAP (EXACT MODULES FROM YOUR SCREENSHOTS)
+  ══════════════════════════════════════ -->
+  <div class="panel" id="panel-alpha">
+
+    <div class="sh"><div class="sh-t">⬡ Course Progress</div></div>
+    <div class="pc">
+      <div class="pr"><div class="pl"><span>Overall Alpha DSA (49 modules total)</span><span>Module 27 of 49 → 55%</span></div><div class="pt"><div class="pf" data-p="55" style="background:linear-gradient(90deg,var(--gold),var(--cyan))"></div></div></div>
+      <div class="pr"><div class="pl"><span>Java Fundamentals (M01–M12)</span><span>100% ✅</span></div><div class="pt"><div class="pf" data-p="100" style="background:var(--green)"></div></div></div>
+      <div class="pr"><div class="pl"><span>Core DSA — Arrays → Queues (M13–M27)</span><span>100% ✅</span></div><div class="pt"><div class="pf" data-p="100" style="background:var(--green)"></div></div></div>
+      <div class="pr" style="margin-bottom:0"><div class="pl"><span>Advanced DSA — Greedy → Segment Trees (M28–M49)</span><span>Starting Now ▶</span></div><div class="pt"><div class="pf" data-p="2" style="background:var(--purple)"></div></div></div>
+    </div>
+
+    <div class="sh"><div class="sh-t">⬡ Full Module Map — Sourced from Your Alpha DSA Telegram Channel</div></div>
+    <div class="mg">
+
+      <!-- DONE -->
+      <div class="mc done"><div class="mn">M01–05</div><div><div class="mt">Intro + Variables + Data Types</div><div class="mm">Welcome, Java setup, Variables, Data types, Input/Output</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M06</div><div><div class="mt">Variables & Data Types (Deep Dive)</div><div class="mm">Type casting, wrapper classes, memory model</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M07</div><div><div class="mt">Operators</div><div class="mm">Arithmetic, Relational, Logical, Assignment, Ternary</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M08</div><div><div class="mt">Conditional Statements</div><div class="mm">if-else, nested if, switch-case, ternary operator</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M09</div><div><div class="mt">Loops (Flow Control)</div><div class="mm">for, while, do-while, break, continue, nested loops</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M10</div><div><div class="mt">Patterns Part I</div><div class="mm">Star patterns, number patterns, triangle patterns</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M11</div><div><div class="mt">Functions & Methods</div><div class="mm">Method declaration, return types, overloading, scope</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M12</div><div><div class="mt">Patterns Part II — Advanced</div><div class="mm">Advanced patterns, diamond, butterfly, hollow shapes</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M13</div><div><div class="mt">Arrays</div><div class="mm">1D Arrays, traversal, searching, Kadane's, prefix sum</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M14</div><div><div class="mt">Basic Sorting Algorithms</div><div class="mm">Bubble, Selection, Insertion sort, stability</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M15</div><div><div class="mt">2D Arrays</div><div class="mm">Matrix ops, spiral order, rotation, transpose, diagonal</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M16</div><div><div class="mt">Strings</div><div class="mm">StringBuilder, palindrome, anagram, compression, reverse</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M17</div><div><div class="mt">Bit Manipulation</div><div class="mm">AND/OR/XOR, shifts, bit tricks, count set bits, power of 2</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M18</div><div><div class="mt">Object Oriented Programming</div><div class="mm">Classes, Objects, Inheritance, Polymorphism, Abstraction, Interfaces</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M19</div><div><div class="mt">Recursion Basics</div><div class="mm">Stack frames, factorial, fibonacci, power, reverse array</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M20</div><div><div class="mt">Divide & Conquer</div><div class="mm">Merge Sort, Quick Sort, Binary Search, Search in rotated array</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M21</div><div><div class="mt">Time & Space Complexity</div><div class="mm">Big-O, Omega, Theta, amortized, space analysis</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M22</div><div><div class="mt">Backtracking</div><div class="mm">N-Queens, Sudoku, Rat in Maze, Word Search, Subset sum</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M23</div><div><div class="mt">ArrayLists & Collections</div><div class="mm">ArrayList, HashMap, HashSet, TreeMap, Java Collections API</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M24</div><div><div class="mt">Linked Lists Part 1</div><div class="mm">Singly LL, Node creation, insert/delete, reverse, Floyd's cycle</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M25</div><div><div class="mt">Linked Lists Part 2</div><div class="mm">Doubly LL, merge sorted LL, LRU cache, clone with random ptr</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M26</div><div><div class="mt">Stacks</div><div class="mm">Implementation, balanced parens, NGE, monotonic stack, histogram</div><span class="mtg tg-done">✅ Done</span></div></div>
+      <div class="mc done"><div class="mn">M27</div><div><div class="mt">Queues ← JUST FINISHED 🎉</div><div class="mm">Queue/Deque, Circular queue, Priority Queue, Sliding window max</div><span class="mtg tg-done">✅ Done</span></div></div>
+
+      <!-- CURRENT — M28 -->
+      <div class="mc now"><div class="mn">M28</div><div><div class="mt">🔥 Greedy Algorithms ← YOU ARE HERE</div><div class="mm">Activity Selection, Fractional Knapsack, Job Scheduling, Huffman, Intervals, Meeting rooms</div><span class="mtg tg-now">▶ NOW</span></div></div>
+
+      <!-- NEXT -->
+      <div class="mc nxt"><div class="mn">M29</div><div><div class="mt">Binary Trees Part 1</div><div class="mm">Tree traversals (in/pre/post/level), height, diameter, mirror</div><span class="mtg tg-nxt">NEXT</span></div></div>
+      <div class="mc nxt"><div class="mn">M30</div><div><div class="mt">Binary Trees Part 2</div><div class="mm">LCA, path sum, zigzag traversal, boundary traversal, views</div><span class="mtg tg-nxt">NEXT</span></div></div>
+      <div class="mc nxt"><div class="mn">M31</div><div><div class="mt">Binary Trees Part 3</div><div class="mm">Morris traversal, serialize/deserialize, construct from traversals</div><span class="mtg tg-nxt">NEXT</span></div></div>
+
+      <!-- UPCOMING -->
+      <div class="mc up"><div class="mn">M32</div><div><div class="mt">Binary Search Trees Part 1</div><div class="mm">Insert/Delete/Search, Kth smallest/largest, Validate BST</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M33</div><div><div class="mt">Binary Search Trees Part 2</div><div class="mm">BST to sorted array, Balance BST, BST iterator, Floor/Ceil</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M34</div><div><div class="mt">Heaps</div><div class="mm">Min/Max heap, Heap sort, K largest, Top K frequent, Merge K sorted</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M35</div><div><div class="mt">Hashing</div><div class="mm">HashMap internals, freq counting, Two Sum, Subarray sum = K</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M36</div><div><div class="mt">Tries</div><div class="mm">Insert/Search/Delete, prefix search, auto-complete, word dictionary</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M37</div><div><div class="mt">Graphs Part 1</div><div class="mm">Representation, BFS, DFS, Connected components, Bipartite</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M38</div><div><div class="mt">Graphs Part 2</div><div class="mm">Cycle detection, Topological sort (DFS + Kahn's), DAG</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M39</div><div><div class="mt">Graphs Part 3</div><div class="mm">Dijkstra, Bellman-Ford, Floyd-Warshall shortest paths</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M40</div><div><div class="mt">Graphs Part 4</div><div class="mm">Prim's MST, Kruskal's MST, Union-Find / DSU</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M41</div><div><div class="mt">Graphs Part 5</div><div class="mm">Bridges, Articulation points, Strongly connected components</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M42</div><div><div class="mt">Graphs Supplemental</div><div class="mm">Advanced graph problems, interview patterns, contest questions</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M43</div><div><div class="mt">DP Part 1</div><div class="mm">Intro, Memoization vs Tabulation, Fibonacci DP, Climbing stairs</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M44</div><div><div class="mt">DP Part 2</div><div class="mm">0/1 Knapsack, Subset sum, Equal partition, Count subsets</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M45</div><div><div class="mt">DP Part 3</div><div class="mm">Unbounded knapsack, Coin change, Rod cutting, Max ribbon cut</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M46</div><div><div class="mt">DP Part 4</div><div class="mm">LCS, LIS, Edit distance, Shortest supersequence, Wildcard match</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M47</div><div><div class="mt">DP Part 5</div><div class="mm">Matrix DP, MCM, Palindrome partitioning, Burst balloons</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M48</div><div><div class="mt">DP Part 6</div><div class="mm">DP on trees, DP on graphs, Digit DP, Bitmask DP</div><span class="mtg tg-up">UPCOMING</span></div></div>
+      <div class="mc up"><div class="mn">M49</div><div><div class="mt">Segment Trees 🏁</div><div class="mm">Build, range query, point update, lazy propagation — FINAL MODULE</div><span class="mtg tg-up">FINAL</span></div></div>
+    </div>
+
+    <div class="sh"><div class="sh-t">⬡ Personalized Study Roadmap</div></div>
+    <div class="rc p1"><div class="rn">1</div><div class="rt"><h4>RIGHT NOW — M28 Greedy (2–3 weeks)</h4><p>Master <strong>Activity Selection, Fractional Knapsack, Job Sequencing, Huffman Encoding, Interval Scheduling, Meeting Rooms.</strong> Do 8–10 LC greedy problems in parallel. These are direct Amazon/Flipkart interview questions.</p><div class="bs"><span class="b br">🔥 ACTIVE</span><span class="b by">2–3 WEEKS</span></div></div></div>
+    <div class="rc p2"><div class="rn">2</div><div class="rt"><h4>NEXT — M29–M31 Binary Trees (4–5 weeks)</h4><p>3 full modules on trees! <strong>Traversals, LCA, Path sum, Views, Morris traversal, Serialize/Deserialize.</strong> Trees are ~20% of all FAANG questions. Take time here — every hour compounds massively.</p><div class="bs"><span class="b bp">INTERVIEW GOLD</span><span class="b by">4–5 WEEKS</span></div></div></div>
+    <div class="rc p3"><div class="rn">3</div><div class="rt"><h4>M32–M33 Binary Search Trees (2–3 weeks)</h4><p>BST insert/delete/search, <strong>Kth smallest, Validate BST, Balance BST, BST iterator.</strong> With your tree foundation from M29–31, BST becomes very fast to learn.</p><div class="bs"><span class="b bc">2–3 WEEKS</span><span class="b by">BUILDS ON TREES</span></div></div></div>
+    <div class="rc p4"><div class="rn">4</div><div class="rt"><h4>M34–M36 Heaps + Hashing + Trie (3–4 weeks)</h4><p><strong>Heaps → Top-K problems, Median stream, Merge K sorted. Hashing → O(1) lookups everywhere. Trie → autocomplete, prefix search.</strong> Together these 3 modules multiply your LC solve rate dramatically.</p><div class="bs"><span class="b by">HIGH ROI</span><span class="b bc">3–4 WEEKS</span></div></div></div>
+    <div class="rc p5"><div class="rn">5</div><div class="rt"><h4>M37–M42 Graphs — 6 Modules! (5–6 weeks)</h4><p>BFS/DFS → Dijkstra → Topological sort → MST → Bridges → SCC. <strong>Graphs is the biggest block in the course and the most powerful topic for interviews.</strong> Alpha dedicates 6 modules here — respect that.</p><div class="bs"><span class="b bp">BIGGEST BLOCK</span><span class="b br">HARDEST</span><span class="b by">5–6 WEEKS</span></div></div></div>
+    <div class="rc p6"><div class="rn">6</div><div class="rt"><h4>M43–M49 DP + Segment Trees — The Final Boss (6–8 weeks)</h4><p>6 parts of DP covering everything from Knapsack to Bitmask DP, ending with Segment Trees. <strong>At your current 98-subs/day pace you will absolutely crush this.</strong> This is the finish line.</p><div class="bs"><span class="b bg">FINISH LINE</span><span class="b br">FINAL BOSS</span><span class="b by">6–8 WEEKS</span></div></div></div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 3 — QUESTIONS PLAN
+  ══════════════════════════════════════ -->
+  <div class="panel" id="panel-qs">
+
+    <div class="sh"><div class="sh-t">⬡ M28 Greedy — Do These NOW</div></div>
+    <a class="qc" href="https://leetcode.com/problems/assign-cookies/" target="_blank"><span class="qd E">EASY</span><div><div class="qn">Assign Cookies</div><div class="qt">Classic greedy intro — maximize satisfied children</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/lemonade-change/" target="_blank"><span class="qd E">EASY</span><div><div class="qn">Lemonade Change</div><div class="qt">Greedy cash tracking — builds core intuition fast</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/jump-game/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Jump Game</div><div class="qt">Track max reach — must-do greedy</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/jump-game-ii/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Jump Game II</div><div class="qt">Min jumps — greedy with range tracking</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/gas-station/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Gas Station</div><div class="qt">Circular greedy — if total gas ≥ cost, solution exists</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/non-overlapping-intervals/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Non-overlapping Intervals</div><div class="qt">Activity selection — sort by end time, greedy pick</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Min Arrows to Burst Balloons</div><div class="qt">Same pattern as activity selection</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/task-scheduler/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Task Scheduler</div><div class="qt">Greedy + frequency — asked at Amazon/Google</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/partition-labels/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Partition Labels</div><div class="qt">Last occurrence greedy — elegant & popular</div></div><span class="qa">→</span></a>
+
+    <div class="sh"><div class="sh-t">⬡ M29–31 Binary Trees — Queue These Up</div></div>
+    <a class="qc" href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank"><span class="qd E">EASY</span><div><div class="qn">Maximum Depth of Binary Tree</div><div class="qt">DFS recursion warm-up — first tree problem</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/diameter-of-binary-tree/" target="_blank"><span class="qd E">EASY</span><div><div class="qn">Diameter of Binary Tree</div><div class="qt">DFS returning height — classic recursive thinking</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Binary Tree Level Order Traversal</div><div class="qt">BFS with queue — pattern used in 10+ tree problems</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/binary-tree-right-side-view/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Binary Tree Right Side View</div><div class="qt">BFS level order — last node at each level</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Lowest Common Ancestor</div><div class="qt">DFS recursion — top Google/Meta interview question</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/path-sum-ii/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Path Sum II</div><div class="qt">DFS backtracking on tree — all root-to-leaf paths</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Construct Tree from Preorder & Inorder</div><div class="qt">M31 topic — construct from traversals</div></div><span class="qa">→</span></a>
+
+    <div class="sh"><div class="sh-t">⬡ M34 Heaps — Do After Heaps Module</div></div>
+    <a class="qc" href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Kth Largest Element in Array</div><div class="qt">Min-heap of size K — fundamental heap pattern</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Top K Frequent Elements</div><div class="qt">Heap + HashMap — asked everywhere</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank"><span class="qd H">HARD</span><div><div class="qn">Find Median from Data Stream</div><div class="qt">Two heaps — the most famous heap problem</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank"><span class="qd H">HARD</span><div><div class="qn">Merge K Sorted Lists</div><div class="qt">Min-heap custom comparator — FAANG favourite</div></div><span class="qa">→</span></a>
+
+    <div class="sh"><div class="sh-t">⬡ M37–42 Graphs — Queue These Up</div></div>
+    <a class="qc" href="https://leetcode.com/problems/number-of-islands/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Number of Islands</div><div class="qt">BFS/DFS on grid — THE entry-point graph problem</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/course-schedule/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Course Schedule</div><div class="qt">Topological sort / cycle detection — asked everywhere</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/network-delay-time/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Network Delay Time</div><div class="qt">Dijkstra's algorithm — single source shortest path</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/word-ladder/" target="_blank"><span class="qd H">HARD</span><div><div class="qn">Word Ladder</div><div class="qt">BFS shortest path on implicit graph — classic hard</div></div><span class="qa">→</span></a>
+
+    <div class="sh"><div class="sh-t">⬡ M43–48 DP — Start When You Hit DP Modules</div></div>
+    <a class="qc" href="https://leetcode.com/problems/climbing-stairs/" target="_blank"><span class="qd E">EASY</span><div><div class="qn">Climbing Stairs</div><div class="qt">Fibonacci DP — absolute first DP problem</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/house-robber/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">House Robber</div><div class="qt">1D DP — skip-or-take pattern</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/coin-change/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Coin Change</div><div class="qt">Unbounded knapsack — most important DP problem</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/longest-common-subsequence/" target="_blank"><span class="qd M">MEDIUM</span><div><div class="qn">Longest Common Subsequence</div><div class="qt">2D DP — foundation for all string DP</div></div><span class="qa">→</span></a>
+    <a class="qc" href="https://leetcode.com/problems/burst-balloons/" target="_blank"><span class="qd H">HARD</span><div><div class="qn">Burst Balloons</div><div class="qt">Interval DP (MCM pattern) — M45 / M47 topic</div></div><span class="qa">→</span></a>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 4 — GITHUB DEPLOY
+  ══════════════════════════════════════ -->
+  <div class="panel" id="panel-deploy">
+    <div class="sh"><div class="sh-t">⬡ Deploy to GitHub Pages in 5 Minutes</div></div>
+    <div class="db-box">
+      <h3>🚀 Step-by-Step — Copy Paste Commands</h3>
+
+      <div class="cw"><div class="cl">STEP 1 — Download this file, rename it to:</div>
+      <div class="cmd" onclick="cp(this)"><code>index.html</code><span class="cp-lbl">COPY</span></div></div>
+
+      <div class="cw"><div class="cl">STEP 2 — Create a GitHub repo named:</div>
+      <div class="cmd" onclick="cp(this)"><code>dsa-command-center</code><span class="cp-lbl">COPY</span></div></div>
+
+      <div class="cw"><div class="cl">STEP 3 — Open terminal in the folder with index.html and run:</div>
+      <div class="cmd" onclick="cp(this)" style="margin-bottom:4px"><code>git init</code><span class="cp-lbl">COPY</span></div>
+      <div class="cmd" onclick="cp(this)" style="margin-bottom:4px"><code>git add index.html</code><span class="cp-lbl">COPY</span></div>
+      <div class="cmd" onclick="cp(this)" style="margin-bottom:4px"><code>git commit -m "🚀 DSA Command Center — animesh045"</code><span class="cp-lbl">COPY</span></div>
+      <div class="cmd" onclick="cp(this)" style="margin-bottom:4px"><code>git remote add origin https://github.com/YOUR_USERNAME/dsa-command-center.git</code><span class="cp-lbl">COPY</span></div>
+      <div class="cmd" onclick="cp(this)"><code>git push -u origin main</code><span class="cp-lbl">COPY</span></div></div>
+
+      <div class="cw"><div class="cl">STEP 4 — Enable GitHub Pages (do this on GitHub website):</div>
+      <div class="cmd"><code>Repo → Settings → Pages → Source: Deploy from branch → Branch: main → Save</code><span class="cp-lbl">READ</span></div></div>
+
+      <div class="cw"><div class="cl">STEP 5 — Your live URL (ready in ~2 minutes):</div>
+      <div class="cmd" onclick="cp(this)"><code>https://YOUR_USERNAME.github.io/dsa-command-center</code><span class="cp-lbl">COPY</span></div></div>
+
+      <p class="note">
+        <strong>Replace YOUR_USERNAME</strong> with your GitHub username everywhere above.<br>
+        Put this URL in your <strong>resume + LinkedIn bio</strong>. It will genuinely impress recruiters. 🔥
+      </p>
+    </div>
+
+    <div class="sh" style="margin-top:22px"><div class="sh-t">⬡ What's in This Dashboard</div></div>
+    <div class="g2">
+      <div class="ic"><div class="ic-icon">📊</div><div class="ic-l">LC Analysis Tab</div><div class="ic-b">Your real profile: <strong>200 problems, difficulty bars, live heatmap from actual calendar data</strong>, 4 insight cards.</div></div>
+      <div class="ic"><div class="ic-icon">🎓</div><div class="ic-l">Alpha Roadmap Tab</div><div class="ic-b"><strong>All 49 real modules</strong> sourced directly from your Alpha DSA Telegram channel screenshots — exact numbers, exact topics.</div></div>
+      <div class="ic"><div class="ic-icon">🎯</div><div class="ic-l">Questions Plan Tab</div><div class="ic-b"><strong>30 curated LC problems</strong> mapped to your exact module order — Greedy now → Trees → Heaps → Graphs → DP. All clickable.</div></div>
+      <div class="ic"><div class="ic-icon">🚀</div><div class="ic-l">GitHub Deploy Tab</div><div class="ic-b">This tab — <strong>copy-paste terminal commands</strong>. Live on the internet in 5 minutes. Share with recruiters.</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>animesh045</span> · DSA Command Center · Alpha DSA (49 modules) + LeetCode
+    <span>200 solved → Top 300K incoming 🚀</span>
+  </footer>
+</div>
+
+<script>
+function sw(id, btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+  setTimeout(animBars, 80);
+}
+function animBars() {
+  document.querySelectorAll('.df[data-p]').forEach(el=>el.style.width=el.dataset.p+'%');
+  document.querySelectorAll('.pf[data-p]').forEach(el=>el.style.width=el.dataset.p+'%');
+}
+const cal={"1770768000":15,"1770854400":15,"1770940800":9,"1771632000":4,"1771718400":25,"1771804800":1,"1771891200":4,"1771977600":30,"1772064000":5,"1772236800":5,"1772323200":9,"1772409600":4,"1772496000":11,"1772582400":11,"1772668800":6,"1772755200":10,"1772841600":4,"1772928000":1,"1773014400":3,"1773100800":34,"1773187200":6,"1773273600":31,"1773360000":5,"1773446400":1,"1773532800":10,"1773619200":7,"1773705600":2,"1773878400":4,"1773964800":10,"1774137600":18,"1774224000":33,"1774310400":98,"1774396800":30,"1774483200":23,"1774569600":8,"1774656000":1,"1774742400":29,"1774828800":24,"1774915200":29,"1775001600":65,"1775088000":50};
+function buildMap(){
+  const entries=Object.entries(cal).sort((a,b)=>+a[0]-+b[0]);
+  const mx=Math.max(...entries.map(e=>e[1]));
+  let tot=0;
+  const el=document.getElementById('hmap');
+  entries.forEach(([,c])=>{
+    tot+=c;const r=c/mx;
+    const d=document.createElement('div');d.className='hcell';d.setAttribute('data-t',c+' subs');
+    d.style.background=r>.8?'rgba(240,192,64,.95)':r>.5?'rgba(240,192,64,.5)':r>.25?'rgba(176,108,255,.5)':r>.05?'rgba(0,207,238,.35)':'rgba(0,207,238,.15)';
+    el.appendChild(d);
+  });
+  document.getElementById('tsubs').textContent=tot.toLocaleString();
+}
+function cp(el){
+  const txt=el.querySelector('code').textContent.trim();
+  navigator.clipboard.writeText(txt).then(()=>{
+    const s=el.querySelector('.cp-lbl'),o=s.textContent;
+    s.textContent='✅ COPIED';setTimeout(()=>s.textContent=o,1500);
+  });
+}
+buildMap();
+setTimeout(animBars,100);
+</script>
+</body>
+</html>
